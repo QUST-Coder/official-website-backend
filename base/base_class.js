@@ -1,5 +1,5 @@
+"use strict";
 const createLogger = require("../utils/log_util");
-const EventEmitter = require("events");
 const logInstances = {};
 class ExtError extends Error {
     constructor() {
@@ -13,9 +13,8 @@ class ExtError extends Error {
         }
     }
 }
-class BaseClass extends EventEmitter {
+class BaseClass {
     constructor() {
-        super(...arguments);
         this.Error = ExtError;
         let filename = this.constructor.name;
         if (logInstances[filename]) {

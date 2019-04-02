@@ -1,3 +1,4 @@
+"use strict";
 const BaseClass = require("./base_class");
 const Router = require("koa-router");
 const methods = require("methods");
@@ -5,6 +6,9 @@ const uuid = require("uuid/v1");
 class BaseRouter extends BaseClass {
     constructor() {
         super(...arguments);
+        this.init();
+    }
+    init() {
         this.__router = Router();
         this.__router.use(async (ctx, next) => {
             ctx.requestId = ctx.request.header["Request-Id"] || uuid();
@@ -12,8 +16,8 @@ class BaseRouter extends BaseClass {
             await next();
         });
         //autoware method
-        let methodNames = Object.keys(this.__proto__).filter(name => {
-            return typeof this.__proto__[name] === "function";
+        let methodNames = Object.getOwnPropertyNames(this.__proto__).filter(name => {
+            return typeof this.__proto__[name] === "function" && name != "constructor";
         });
         let methodNameReg = /([a-z])([A-Z])/;
         // console.log(methods)

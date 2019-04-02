@@ -13,7 +13,7 @@ function autoLoadRouters(filePath, router) {
         });
     } else if (stat.isFile()) {
         if (!indexReg.test(filePath)) {
-            let subRouter = require(filePath);
+            let subRouter = (new (require(filePath))).mount("/");
             if (subRouter && subRouter.routes()) {
                 router.use(subRouter.routes());
             }
@@ -21,8 +21,7 @@ function autoLoadRouters(filePath, router) {
     }
 }
 router.get("/", async (ctx) => {
-    ctx.body = "Good luck to you !\nThis is an API server and does not provide web services.";
+    ctx.body = "Good luck to you ! \nThis is an API server and does not provide web services.";
 });
 autoLoadRouters(path.resolve(__dirname), router);
-
 module.exports = router;
