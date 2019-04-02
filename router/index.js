@@ -15,7 +15,7 @@ function autoLoadRouters(filePath, router) {
         if (!indexReg.test(filePath)) {
             let subRouter = require(filePath);
             if (subRouter && subRouter.routes()) {
-                router.use(subRouter.router());
+                router.use(subRouter.routes());
             }
         }
     }
