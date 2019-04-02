@@ -10,10 +10,10 @@ class HandlerLoader extends BaseHandler {
         this.handlerMap = {};
         let files = fs.readdirSync(__dirname);
         files.forEach(file => {
-            if (file === "index.js" || path.extname(file) !== "js") return;
-            let handler = new require(path.join(__dirname, file))();
-            let funcNames = Object.keys(handler.__proto__).filter(name => {
-                return typeof this.__proto__[name] === "function";
+            if (file === "index.js" || path.extname(file) != ".js") return;
+            let handler = new require(path.join(__dirname, file));
+            let funcNames = Object.getOwnPropertyNames(handler.prototype).filter(name => {
+                return typeof handler.prototype[name] === "function" && name != "constructor";
             });
             funcNames.forEach(func => {
                 if (!this.handlerMap[func]) {
