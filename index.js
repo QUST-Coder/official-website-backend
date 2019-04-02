@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 
 const config = require("./config");
-const BaseClass = require("./utils/base_class");
+const BaseClass = require("./base/base_class");
 class Main extends BaseClass {
     constructor() {
         super(...arguments);
@@ -31,7 +31,8 @@ class Main extends BaseClass {
         /**
          * load middleware and router
          */
-
+        const router = require("./router");
+        app.use(router.routes());
         require("./middleware").forEach(middleware => {
             app.use(middleware);
         });
