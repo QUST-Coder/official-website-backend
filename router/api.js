@@ -2,8 +2,8 @@ const BaseRouter = require("../base/base_router");
 const Handler = require("../handler");
 const validate = require("../schema");
 class ApiRouter extends BaseRouter {
-    constructor() {
-        super(...arguments);
+    constructor(...args) {
+        super(...args);
     }
     async postApi(ctx) {
         try {
@@ -33,6 +33,9 @@ class ApiRouter extends BaseRouter {
             }
             this.logger.error(`err|requestId=${ctx.requestId}|code=${err.code || -1}|message=${err.message}`);
         }
+    }
+    async getApi(ctx) {
+        ctx.body = "hello world!";
     }
 }
 
