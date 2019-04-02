@@ -1,7 +1,7 @@
 const createLogger = require("../utils/log_util");
 const EventEmitter = require("events");
 const logInstances = {};
-class ExtError extends Error() {
+class ExtError extends Error {
     constructor() {
         super(...arguments);
         if (arguments.length == 2) {
