@@ -1,7 +1,7 @@
 const hjson = require("hjson");
 const path = require("path");
 const fs = require("fs");
-const BaseClass = require("../utils/base_class");
+const BaseClass = require("../base/base_class");
 
 const configs = {};
 class ConfigLoader extends BaseClass {
