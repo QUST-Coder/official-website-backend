@@ -1,7 +1,7 @@
 const { createLogger, format, transports } = require("winston");
 const callsite = require("callsite");
 const path = require("path");
-const logPath = process.env.LOG_PATH || "./";
+const logPath = process.env.LOG_PATH || "./app_log/";
 const moment = require("moment");
 function lineno() {
     let stack = callsite()[3];
