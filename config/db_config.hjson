@@ -1,0 +1,9 @@
+{
+    db_type:"mongo",
+    db_user:{
+        auth:false,
+        url:"mongodb://localhost:27017/",
+        database:"official_website_user",
+        prefix:"t"
+    }
+}

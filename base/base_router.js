@@ -1,13 +1,14 @@
 const BaseClass = require("./base_class");
 const Router = require("koa-router");
 const methods = require("methods");
-
+const uuid = require("uuid/v1");
 class BaseRouter extends BaseClass {
     constructor() {
         super(...arguments);
         this.__router = Router();
         this.__router.use(async (ctx, next) => {
-            this.logger.info(`path=${ctx.path}|requestId=${ctx.request.header["Request-Id"]}`);
+            ctx.requestId = ctx.request.header["Request-Id"] || uuid();
+            this.logger.info(`path=${ctx.path}|requestId=${ctx.requestId}`);
             await next();
         });
         //autoware method
