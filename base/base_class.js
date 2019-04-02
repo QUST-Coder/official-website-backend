@@ -1,4 +1,4 @@
-const createLogger = require("./log_util");
+const createLogger = require("../utils/log_util");
 const logInstances = {};
 class BaseClass {
     constructor() {
