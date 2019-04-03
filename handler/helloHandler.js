@@ -5,7 +5,13 @@ class helloHandler extends BaseHandler {
         super(...arguments);
     }
     async hello() {
-        return "hello world!";
+        return {
+            error: {
+                code: 0,
+                msg: "success"
+            },
+            message: "hello world!"
+        };
     }
 
 }
