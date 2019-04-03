@@ -1,1 +1,3 @@
-module.exports = {};
+module.exports = (func,args)=>{
+    return args;
+};

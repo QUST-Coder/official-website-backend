@@ -7,7 +7,7 @@ class ApiRouter extends BaseRouter {
     }
     async postApi(ctx) {
         try {
-            let { body: req } = ctx.req;
+            let req = ctx.request.body;
             let { func, args } = req;
             this.logger.info(`req|requestId=${ctx.requestId}|body=${JSON.stringify(req)}`);
             let handler = Handler.getHandler(func);
@@ -37,8 +37,7 @@ class ApiRouter extends BaseRouter {
     async getApi(ctx) {
         let handler = Handler.getHandler("hello");
         ctx.body = await handler.prototype["hello"].apply(handler, []);
-
     }
 }
-
-module.exports = ApiRouter;
+const instance = new ApiRouter();
+module.exports = instance.mount("/");
