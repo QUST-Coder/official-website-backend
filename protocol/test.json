@@ -1,0 +1,15 @@
+{
+    "functions": [
+        {
+            "name": "func",
+            "args": {
+                "a": "string",
+                "b": "int"
+            },
+            "rets": {
+                "c": "string",
+                "d": "string"
+            }
+        }
+    ]
+}
