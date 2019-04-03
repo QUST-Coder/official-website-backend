@@ -1,3 +1,30 @@
+function generateRets(rets, prefixBlank) {
+    let blank = "                " + prefixBlank;
+    let retsKeys = Object.keys(rets);
+    let retsList = [];
+    for (let i in retsKeys) {
+        let ret = "";
+        if (typeof rets[retsKeys[i]] === "object") {
+            ret = `${blank}${retsKeys[i]}:{\n${generateRets(rets[retsKeys[i]], prefixBlank + "    ")}\n${blank}}`;
+        } else {
+            if (rets[retsKeys[i]] === "string") {
+                ret = blank + `${retsKeys[i]}: ""`;
+            }
+            if (rets[retsKeys[i]] === "number") {
+                ret = blank + `${retsKeys[i]}: 0`;
+            }
+            if (rets[retsKeys[i]] === "list") {
+                ret = blank + `${retsKeys[i]}: []`;
+            }
+            if (rets[retsKeys[i]] === "object") {
+                ret = blank + `${retsKeys[i]}: {}`;
+            }
+        }
+        retsList.push(ret);
+    }
+    return retsList.join(",\n");
+}
+
 function generate(funcDesc) {
     let { handlerName, functions } = funcDesc;
     let func = [];
@@ -5,8 +32,9 @@ function generate(funcDesc) {
         let funcname = functions[i].name;
         let argsKeys = Object.keys(functions[i].args);
         let argStr = argsKeys.join(",");
-        let retsKeys = Object.keys(functions[i].rets);
-        let retStr = "                " + retsKeys.join(":\"\",\n                ") + ":\"\"\n";
+        let retStr = generateRets(functions[i].rets, "");
+        // let retsKeys = Object.keys(functions[i].rets);
+        // let retStr = "                " + retsKeys.join(":\"\",\n                ") + ":\"\"\n";
         let funcStr = `
     async ${funcname}(${argStr}) {
         try {

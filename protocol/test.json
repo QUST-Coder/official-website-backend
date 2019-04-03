@@ -4,11 +4,21 @@
             "name": "func",
             "args": {
                 "a": "string",
-                "b": "int"
+                "b": "number"
             },
             "rets": {
-                "c": "string",
-                "d": "string"
+                "c": {
+                    "e": "number",
+                    "kk": {
+                        "kk": {
+                            "gg": "string"
+                        }
+                    }
+                },
+                "d": "number",
+                "f": "string",
+                "aaa": "object",
+                "bbb": "list"
             }
         }
     ]
