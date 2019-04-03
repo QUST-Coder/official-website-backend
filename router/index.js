@@ -13,7 +13,8 @@ function autoLoadRouters(filePath, router) {
         });
     } else if (stat.isFile()) {
         if (!indexReg.test(filePath)) {
-            let subRouter = (new (require(filePath))).mount("/");
+            //let subRouter = (new (require(filePath))).mount("/");
+            let subRouter = require(filePath);
             if (subRouter && subRouter.routes()) {
                 router.use(subRouter.routes());
             }

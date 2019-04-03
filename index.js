@@ -26,8 +26,8 @@ class Main extends BaseClass {
          */
         const json = require("koa-json");
         const bodyParser = require("koa-bodyparser");
-        app.use(json());
         app.use(bodyParser());
+        app.use(json());
         /**
          * load middleware and router
          */

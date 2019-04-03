@@ -34,7 +34,8 @@ class BaseRouter extends BaseClass {
             }
         });
     }
-    route() {
+    // eslint-disable-next-line no-unused-vars
+    route(router) {
     }
 
     mount(path) {
