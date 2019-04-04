@@ -11,7 +11,15 @@ class logger {
     constructor(name) {
         this.name = name;
         this.options = {};
+        this.date = moment().format("YYYYMMDD");
         this._initCommon(name);
+    }
+    _dateUpdate() {
+        let nowDate = moment().format("YYYYMMDD");
+        if (this.date != nowDate) {
+            this.date = nowDate;
+            this._initCommon(this.name);
+        }
     }
     _initCommon(name) {
         this._commonLogger = createLogger({
@@ -21,9 +29,9 @@ class logger {
                 format.colorize()
             ),
             transports: [
-                new transports.File({ filename: path.join(logPath, `${name}.log`), level: "info" }),
-                new transports.File({ filename: path.join(logPath, `${name}_error.log`), level: "error" }),
-                new transports.File({ filename: path.join(logPath, "debug.log"), level: "debug" })
+                new transports.File({ filename: path.join(logPath, `${name}_${this.date}.log`), level: "info" }),
+                new transports.File({ filename: path.join(logPath, `${name}_error_${this.date}.log`), level: "error" }),
+                new transports.File({ filename: path.join(logPath, "debug.log"), level: "debug", maxsize: 1024 * 1024 * 10 })
             ]
         });
         if (process.env.NODE_ENV !== "formal") {
@@ -36,6 +44,7 @@ class logger {
         }
     }
     _log(level, args) {
+        this._dateUpdate();
         if (args.length === 0) {
             return false;
         }
