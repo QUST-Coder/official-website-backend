@@ -11,7 +11,7 @@ function existHandler(handlerName) {
 protocols.forEach(protocolFileName => {
     let handlerName = protocolFileName.split(".")[0];
     if (existHandler(handlerName)) {
-        //return;
+        return;
     }
     let handlerDescStr = fs.readFileSync(path.join(__dirname, "../protocol", protocolFileName));
     let handlerDesc = JSON.parse(handlerDescStr);
