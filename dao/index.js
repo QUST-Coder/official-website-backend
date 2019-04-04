@@ -1,4 +1,5 @@
-const config = require("../config")["db_config"];
+const { configs } = require("../config");
+const db_config = configs["db_config"];
 const path = require("path");
 const fs = require("fs");
 const daoMap = {};
@@ -12,11 +13,11 @@ let loadDao = async (type) => {
     }));
 };
 let init = async () => {
-    if (config.db_type === "mongo") {
+    if (db_config.db_type === "mongo") {
         await loadDao("mongo");
     }
 
-    if (config.db_type === "mysql") {
+    if (db_config.db_type === "mysql") {
         await loadDao("mysql");
     }
 };
