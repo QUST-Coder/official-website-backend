@@ -1,5 +1,5 @@
 const mongo = require("../../utils/mongo_util");
-const instance = require("../../config")["db_config"]["db_user"];
+const instance = require("../../config").configs["db_config"]["db_user"];
 const BaseClass = require("../../base/base_class");
 class UserDao extends BaseClass {
     constructor() {
