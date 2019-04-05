@@ -29,7 +29,11 @@ class BaseRouter extends BaseClass {
                     return match.toLowerCase();
                 });
                 if (this.__router[method] && path) {
-                    this.__router[method](`/${path}`, this.__proto__[name].bind(this));
+                    if (path == "api") {
+                        this.__router[method]("/api*", this.__proto__[name].bind(this));
+                    } else {
+                        this.__router[method](`/${path}`, this.__proto__[name].bind(this));
+                    }
                 }
             }
         });
