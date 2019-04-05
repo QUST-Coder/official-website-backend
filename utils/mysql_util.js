@@ -4,7 +4,7 @@ class MysqlUtil {
         this.pool = {};
     }
 
-    async init(instance) {
+    init(instance) {
         try {
             let poolName = `${instance.host}_${instance.database}`;
             if (!this.pool[poolName]) {
@@ -24,17 +24,12 @@ class MysqlUtil {
 
     async query(sql, arr, instance) {
         return await new Promise(async (resolve, reject) => {
-            (await this.init(instance)).getConnection((err, connection) => {
+            // eslint-disable-next-line no-unused-vars
+            (this.init(instance)).query(sql, arr, (err, rows, fields) => {
                 if (err) {
                     return reject(err);
                 }
-                // eslint-disable-next-line no-unused-vars
-                connection.query(sql, arr, (err, rows, fields) => {
-                    if (err) {
-                        return reject(err);
-                    }
-                    resolve(rows);
-                });
+                resolve(rows);
             });
         });
     }
