@@ -1,0 +1,48 @@
+{
+    "functions": [
+        {
+            "name": "register",
+            "args": {
+                "userName": "string",
+                "password": "string",
+                "email": "",
+                "captchaToken": ""
+            },
+            "rets": {
+                "access_token": "string"
+            }
+        },
+        {
+            "name": "login",
+            "args": {
+                "userName": "string",
+                "password": "string",
+                "captchaToken": ""
+            },
+            "rets": {
+                "access_token": "string"
+            }
+        },
+        {
+            "name": "logout",
+            "args": {
+                "access_token": "string"
+            },
+            "rets": {}
+        },
+        {
+            "name": "uniqueName",
+            "args": {
+                "userName": "string"
+            },
+            "rets": {}
+        },
+        {
+            "name": "uniqueEmail",
+            "args": {
+                "email": "string"
+            },
+            "rets": {}
+        }
+    ]
+}

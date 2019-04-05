@@ -25,6 +25,7 @@ class SessionServer extends BaseService {
             return session;
         } catch (err) {
             this.logger.error(err);
+            throw err;
         }
     }
 
@@ -53,6 +54,15 @@ class SessionServer extends BaseService {
             };
         } catch (err) {
             this.logger.error(err);
+            throw err;
+        }
+    }
+
+    async expireSession(session) {
+        try {
+            await sessionDao.expireSession(session);
+        } catch (err) {
+            throw err;
         }
     }
 

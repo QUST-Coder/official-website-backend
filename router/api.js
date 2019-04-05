@@ -12,7 +12,7 @@ class ApiRouter extends BaseRouter {
             this.logger.info(`req|requestId=${ctx.requestId}|body=${JSON.stringify(req)}`);
             let handler = Handler.getHandler(func);
             args = validate(func, args);
-            let rsp = await handler.prototype[func].apply(handler, args);
+            let rsp = await handler.__proto__[func].apply(handler, args);
             this.logger.info(`rsp|requestId=${ctx.requestId}|body=${JSON.stringify(rsp)}`);
             ctx.body = rsp;
         } catch (err) {
@@ -36,7 +36,7 @@ class ApiRouter extends BaseRouter {
     }
     async getApi(ctx) {
         let handler = Handler.getHandler("hello");
-        ctx.body = await handler.prototype["hello"].apply(handler, []);
+        ctx.body = await handler.__proto__["hello"].apply(handler, []);
     }
 }
 const instance = new ApiRouter();
