@@ -36,6 +36,7 @@ class SessionDao extends BaseDao {
             return rows;
         } catch (err) {
             this.logger.error(`setSession Error|args=${JSON.stringify(session, data, expireTime)}|err=${err.message}`);
+            throw err;
         }
     }
     async getSession(session) {
@@ -50,6 +51,7 @@ class SessionDao extends BaseDao {
             return rows[0];
         } catch (err) {
             this.logger.error(err);
+            throw err;
         }
     }
 
@@ -61,6 +63,7 @@ class SessionDao extends BaseDao {
             return rows;
         } catch (err) {
             this.logger.error(err);
+            throw err;
         }
     }
 
@@ -72,6 +75,7 @@ class SessionDao extends BaseDao {
             return rows;
         } catch (err) {
             this.logger.error(err);
+            throw err;
         }
     }
 }

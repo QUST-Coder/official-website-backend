@@ -8,10 +8,9 @@ fs.readdirSync(__dirname).forEach(file => {
 });
 module.exports = (func, args) => {
     let validate = validates[func];
-    let { error, value } = Joi.validate(args, validate);
+    let { error, value } = Joi.validate(args, validate.schema);
     if (error !== null) {
-        //console.log(err);
         throw error;
     }
-    return value;
+    return validate.format(value);
 };
