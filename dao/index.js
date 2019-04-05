@@ -4,14 +4,15 @@ const path = require("path");
 const fs = require("fs");
 const daoMap = {};
 let loadDao = async (type) => {
-    await Promise.all(fs.readdirSync(path.join(__dirname, type)).forEach(async file => {
-        if (fs.match(".js") === null) return;
+    fs.readdirSync(path.join(__dirname, type)).forEach(async file => {
+        if (file.match(".js") === null) return;
         let daoName = file.split(".")[0];
         let dao = require(path.join(__dirname, type, daoName));
-        await dao.init();
+
         daoMap[daoName] = dao;
-    }));
+    });
 };
+
 
 if (db_config.db_type === "mongo") {
     loadDao("mongo");
