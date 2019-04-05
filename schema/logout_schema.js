@@ -1,4 +1,4 @@
-const Joi = require("Joi");
+const Joi = require("joi");
 const schema = {
     access_token: Joi.string().optional()
 };
