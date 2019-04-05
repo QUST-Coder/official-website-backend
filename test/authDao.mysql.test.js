@@ -38,8 +38,8 @@ async function doTest() {
         console.log(rsp);
     }
     //await testCreateTable();
-    //await testSetUser();
-    //await testActiveUser();
+    await testSetUser();
+    await testActiveUser();
     await testVerify();
     process.exit(0);
 }
