@@ -12,15 +12,15 @@ let loadDao = async (type) => {
         daoMap[daoName] = dao;
     }));
 };
-let init = async () => {
-    if (db_config.db_type === "mongo") {
-        await loadDao("mongo");
-    }
 
-    if (db_config.db_type === "mysql") {
-        await loadDao("mysql");
-    }
-};
+if (db_config.db_type === "mongo") {
+    loadDao("mongo");
+}
+
+if (db_config.db_type === "mysql") {
+    loadDao("mysql");
+}
+
 let getDao = (daoName) => {
     if (daoMap[daoName]) {
         return daoMap[daoName];
@@ -29,4 +29,3 @@ let getDao = (daoName) => {
     }
 };
 module.exports = getDao;
-module.exports.init = init;
