@@ -33,9 +33,6 @@ class Main extends BaseClass {
          */
         const router = require("./router");
         app.use(router.routes());
-        require("./middleware").forEach(middleware => {
-            app.use(middleware);
-        });
 
         /**
          * Get port from config and start

@@ -76,6 +76,7 @@ class AuthDao extends BaseDao {
             }
         } catch (err) {
             this.logger.error(`verify Error|args=${JSON.stringify(userName, password)}|err=${err.message}`);
+            throw err;
         }
     }
     /**
@@ -94,6 +95,7 @@ class AuthDao extends BaseDao {
             return rows;
         } catch (err) {
             this.logger.error(`setUser Error|args=${JSON.stringify(userName, password, email)}|err=${err.message}`);
+            throw err;
         }
     }
     /**
@@ -109,6 +111,7 @@ class AuthDao extends BaseDao {
             return rows;
         } catch (err) {
             this.logger.error(`activeUser Error|userName=${userName}|err=${err.message}`);
+            throw err;
         }
     }
     /**
@@ -124,6 +127,32 @@ class AuthDao extends BaseDao {
             return rows;
         } catch (err) {
             this.logger.error(`deActive Error|userName=${userName}|err=${err.message}`);
+            throw err;
+        }
+    }
+    async uniqName(userName) {
+        try {
+            let sql = `select count(*) from ${this.table} where f_username = ?`;
+            let args = [userName];
+            let rows = await database.query(sql, args, instance);
+            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
+            return rows[0]["count(*)"];
+        } catch (err) {
+            this.logger.error(`uniqName Error|userName=${userName}|err=${err.message}`);
+            throw err;
+        }
+    }
+
+    async uniqEmail(email) {
+        try {
+            let sql = `select count(*) from ${this.table} where f_email = ?`;
+            let args = [email];
+            let rows = await database.query(sql, args, instance);
+            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
+            return rows[0]["count(*)"];
+        } catch (err) {
+            this.logger.error(`uniqName Error|email=${email}|err=${err.message}`);
+            throw err;
         }
     }
 
