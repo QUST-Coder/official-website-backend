@@ -6,23 +6,24 @@
 "use strict";
 const database = require("../../utils/mysql_util");
 const { configs } = require("../../config");
-const { salt, user_name_limit, table_prefix } = configs["app_config"]["server_base"];
 const instance = configs["db_config"]["db_user"];
-const BaseClass = require("../../base/base_class");
+const BaseDao = require("../../base/base_dao");
 const assert = require("assert");
 const crypto = require("crypto");
-const path = require("path");
-const fs = require("fs");
+const {
+    salt,
+    user_name_limit,
+} = configs["app_config"]["server_base"];
 
-class AuthDao extends BaseClass {
+class AuthDao extends BaseDao {
 
     constructor() {
         super(...arguments);
-        this.table = table_prefix + "_user_auth";
+        this.table = this.table_prefix + "_user_auth";
         this.salt = salt;
         this.zeroPass = crypto.createHash("sha1").update("").digest("hex").toUpperCase();
         this.emailReg = new RegExp("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$");
-        this.createSql = fs.readFileSync(path.join(__dirname, "t_user_auth.sql"));
+        this.instance = instance;
     }
     /**
      * 校验保存至数据库的用户信息是否合法
@@ -50,21 +51,6 @@ class AuthDao extends BaseClass {
         sha1.update(password + this.salt);
         let hash = sha1.digest("hex");
         return hash;
-    }
-    /**
-     * 建表方法
-     */
-    async createTable() {
-        try {
-            let drop = `DROP TABLE IF EXISTS ${this.table}`;
-            await database.query(drop, [], instance);
-            let sql = this.createSql.replace("{table}", this.table);
-            let args = [];
-            let rows = await database.query(sql, args, instance);
-            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
-        } catch (err) {
-            this.logger.error(`createTable Error|tableName=${this.table}|err=${err.message}`);
-        }
     }
     /**
      * 校验用户身份信息
