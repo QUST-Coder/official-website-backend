@@ -11,77 +11,48 @@ class loginHandler extends BaseHandler {
 
     async register(userName, password, email, captchaToken) {
         try {
-            this.logger.info(userName, password, email, captchaToken);
+            this.logger.info(`user register|请求|${userName}|${password}|${email}|${captchaToken}`);
             let captchaCheck = await captchaServer.checkCaptchaToken(captchaToken);
             if (!captchaCheck) {
-                return {
-                    error: {
-                        code: -1,
-                        msg: "验证码验证不通过"
-                    }
-                };
+                this.logger.info(`user register|验证码验证不通过|${userName}|${password}|${email}|${captchaToken}`);
+                return { error: { code: -1, msg: "验证码验证不通过" } };
             }
             await authDao.setUser(userName, password, email);
             let verifyResult = await authDao.verify(userName, password);
             let userData = verifyResult;
             let access_token = await sessionServer.setSession(userData);
+            this.logger.info(`user register|响应|${userName}|${access_token}`);
             return {
-                error: {
-                    code: 0,
-                    msg: "success"
-                },
+                error: { code: 0, msg: "success" },
                 access_token
             };
         } catch (err) {
             this.logger.error(err);
-            return {
-                error: {
-                    code: -1,
-                    msg: err.message
-                }
-            };
+            return { error: { code: -1, msg: err.message }, };
         }
     }
 
-
+    //TODO 记住密码
     async login(userName, password, captchaToken) {
         try {
             this.logger.info(userName, password, captchaToken);
             let captchaCheck = await captchaServer.checkCaptchaToken(captchaToken);
             if (!captchaCheck) {
-                return {
-                    error: {
-                        code: -1,
-                        msg: "验证码验证不通过"
-                    }
-                };
+                return { error: { code: -1, msg: "验证码验证不通过" } };
             }
             let verifyResult = await authDao.verify(userName, password);
             if (!verifyResult.verify) {
-                return {
-                    error: {
-                        code: -1,
-                        msg: "用户名或密码错误"
-                    }
-                };
+                return { error: { code: -1, msg: "用户名或密码错误" } };
             } else {
                 let access_token = await sessionServer.setSession(verifyResult);
                 return {
-                    error: {
-                        code: 0,
-                        msg: "success"
-                    },
+                    error: { code: 0, msg: "success" },
                     access_token
                 };
             }
         } catch (err) {
             this.logger.error(err);
-            return {
-                error: {
-                    code: -1,
-                    msg: err.message
-                }
-            };
+            return { error: { code: -1, msg: err.message }, };
         }
     }
 
@@ -90,22 +61,10 @@ class loginHandler extends BaseHandler {
         try {
             this.logger.info(access_token);
             await sessionServer.expireSession(access_token);
-            return {
-                error: {
-                    code: 0,
-                    msg: "success"
-                },
-
-            };
+            return { error: { code: 0, msg: "success" }, };
         } catch (err) {
             this.logger.error(err);
-            return {
-                error: {
-                    code: -1,
-                    msg: err.message
-                },
-
-            };
+            return { error: { code: -1, msg: err.message }, };
         }
     }
 
@@ -115,29 +74,13 @@ class loginHandler extends BaseHandler {
             this.logger.info(userName);
             let nameCheck = await authDao.uniqName(userName);
             if (!nameCheck) {
-                return {
-                    error: {
-                        code: 0,
-                        msg: "success"
-                    }
-                };
+                return { error: { code: 0, msg: "success" } };
             } else {
-                return {
-                    error: {
-                        code: -1,
-                        msg: "用户名已被注册"
-                    }
-                };
+                return { error: { code: -1, msg: "用户名已被注册" } };
             }
         } catch (err) {
             this.logger.error(err);
-            return {
-                error: {
-                    code: -1,
-                    msg: err.message
-                },
-
-            };
+            return { error: { code: -1, msg: err.message }, };
         }
     }
 
@@ -147,32 +90,39 @@ class loginHandler extends BaseHandler {
             this.logger.info(email);
             let emailCheck = await authDao.uniqEmail(email);
             if (!emailCheck) {
-                return {
-                    error: {
-                        code: 0,
-                        msg: "success"
-                    }
-                };
+                return { error: { code: 0, msg: "success" } };
             } else {
-                return {
-                    error: {
-                        code: -1,
-                        msg: "邮箱已被注册"
-                    }
-                };
+                return { error: { code: -1, msg: "邮箱已被注册" } };
             }
         } catch (err) {
             this.logger.error(err);
-            return {
-                error: {
-                    code: -1,
-                    msg: err.message
-                },
-
-            };
+            return { error: { code: -1, msg: err.message }, };
         }
     }
 
+    async updatePass(userName, oldPass, newPass, captchaToken) {
+        try {
+            this.logger.info(userName, oldPass, newPass);
+            let captchaCheck = await captchaServer.checkCaptchaToken(captchaToken);
+            if (!captchaCheck) {
+                this.logger.info(`user register|验证码验证不通过|${userName}|${oldPass}|${newPass}|${captchaToken}`);
+                return { error: { code: -1, msg: "验证码验证不通过" } };
+            }
+            let verifyResult = await authDao.verify(userName, oldPass);
+            if (!verifyResult.verify) {
+                return { error: { code: -1, msg: "密码错误" } };
+            }
+            await authDao.changePassword(userName, newPass);
+            verifyResult = await authDao.verify(userName, newPass);
+            if (!verifyResult.verify) {
+                return { error: { code: -1, msg: "密码更改失败，请重试" } };
+            }
+            return { error: { code: 0, msg: "success" } };
+        } catch (err) {
+            this.logger.error(err);
+            return { error: { code: -1, msg: err.message }, };
+        }
+    }
 
 }
 module.exports = loginHandler;

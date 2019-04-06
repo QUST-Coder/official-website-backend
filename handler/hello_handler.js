@@ -4,9 +4,9 @@ class helloHandler extends BaseHandler {
     constructor() {
         super(...arguments);
     }
-    async hello() {
+    async hello(args) {
         try {
-            this.logger.info();
+            this.logger.info(args);
             return {
                 error: {
                     code: 0,
