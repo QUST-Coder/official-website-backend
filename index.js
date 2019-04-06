@@ -31,7 +31,9 @@ class Main extends BaseClass {
         /**
          * load middleware and router
          */
+        const authMid = require("./middleware/auth_mid");
         const router = require("./router");
+        app.use(authMid);
         app.use(router.routes());
 
         /**
