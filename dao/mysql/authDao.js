@@ -23,6 +23,7 @@ class AuthDao extends BaseDao {
         this.salt = salt;
         this.zeroPass = crypto.createHash("sha1").update("").digest("hex").toUpperCase();
         this.emailReg = new RegExp("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$");
+        this.illegalNameReg = new RegExp("^[a-zA-Z0-9_]{4,16}$");
         this.instance = instance;
     }
     /**
@@ -36,6 +37,7 @@ class AuthDao extends BaseDao {
         assert(typeof password === "string", "密码必须为字符串类型");
         assert(typeof email === "string", "邮箱必须为字符串类型");
         assert(userName != "", "用户名不能为空");
+        assert(this.illegalNameReg.exec(userName), "用户名必须为4到16位，由字母/数字/下划线构成");
         assert(userName.length < user_name_limit, "用户名长度超限");
         assert(password !== this.zeroPass, "密码不能为空");
         assert(email != "", "邮箱不能为空");
@@ -130,6 +132,10 @@ class AuthDao extends BaseDao {
             throw err;
         }
     }
+    /**
+     *  检查注册名唯一性
+     * @param {string} userName 
+     */
     async uniqName(userName) {
         try {
             let sql = `select count(*) from ${this.table} where f_username = ?`;
@@ -142,7 +148,10 @@ class AuthDao extends BaseDao {
             throw err;
         }
     }
-
+    /**
+     *  检查邮件唯一性
+     * @param {string} email 
+     */
     async uniqEmail(email) {
         try {
             let sql = `select count(*) from ${this.table} where f_email = ?`;
@@ -155,7 +164,18 @@ class AuthDao extends BaseDao {
             throw err;
         }
     }
-
+    async changePassword(userName, password) {
+        try {
+            let sql = `update ${this.table} set f_password = ? where f_username = ?`;
+            let args = [this.password(password), userName];
+            let rows = await database.query(sql, args, instance);
+            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
+            return rows;
+        } catch (err) {
+            this.logger.error(`changePassword Error|email=${userName}|err=${err.message}`);
+            throw err;
+        }
+    }
 }
 
 module.exports = new AuthDao();

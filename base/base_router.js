@@ -11,7 +11,7 @@ class BaseRouter extends BaseClass {
     init() {
         this.__router = Router();
         this.__router.use(async (ctx, next) => {
-            ctx.requestId = ctx.request.header["Request-Id"] || uuid();
+            ctx.requestId = ctx.request.header["request_id"] || uuid();
             this.logger.info(`path=${ctx.path}|requestId=${ctx.requestId}`);
             await next();
         });
