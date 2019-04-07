@@ -1,6 +1,9 @@
 version: 2
 jobs:
   build:
+    branches:
+      ignore:
+        - develop
     working_directory: ~/official-website-backend
     docker:
       - image: node:10-jessie
