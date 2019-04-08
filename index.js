@@ -33,6 +33,8 @@ class Main extends BaseClass {
          */
         const authMid = require("./middleware/auth_mid");
         const router = require("./router");
+        const cors = require("koa2-cors");
+        app.use(cors());
         app.use(authMid);
         app.use(router.routes());
 
