@@ -1,0 +1,30 @@
+{
+    "functions": [
+        {
+            "name": "getCaptcha",
+            "args": {
+                "pin": "string"
+            },
+            "rets": {
+                "error": {
+                    "code": "number",
+                    "msg": "string"
+                },
+                "img": "string"
+            }
+        },
+        {
+            "name": "checkCaptcha",
+            "args": {
+                "pin": "string",
+                "token": "string"
+            },
+            "rets": {
+                "error": {
+                    "code": "number",
+                    "msg": "string"
+                }
+            }
+        }
+    ]
+}
