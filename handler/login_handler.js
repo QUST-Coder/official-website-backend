@@ -33,7 +33,7 @@ class loginHandler extends BaseHandler {
     }
 
     //TODO 记住密码
-    async login(userName, password, captchaToken) {
+    async login(userName, password, captchaToken, remember) {
         try {
             this.logger.info(userName, password, captchaToken);
             let captchaCheck = await captchaServer.checkCaptchaToken(captchaToken);
@@ -44,7 +44,14 @@ class loginHandler extends BaseHandler {
             if (!verifyResult.verify) {
                 return { error: { code: -1, msg: "用户名或密码错误" } };
             } else {
-                let access_token = await sessionServer.setSession(verifyResult);
+                let setSessionArgs = [];
+                //勾选记住登陆状态session状态为7天
+                if (remember) {
+                    setSessionArgs = [verifyResult, 7 * 24 * 60 * 60 * 1000, false];
+                } else {
+                    setSessionArgs = [verifyResult];
+                }
+                let access_token = await sessionServer.setSession.apply(sessionServer, setSessionArgs);
                 return {
                     error: { code: 0, msg: "success" },
                     access_token
