@@ -1,0 +1,24 @@
+{
+    "functions": [
+        {
+            "name": "setUserInfo",
+            "args": {},
+            "rets": {}
+        },
+        {
+            "name": "queryMyInfo",
+            "args": {},
+            "rets": {}
+        },
+        {
+            "name": "setQUSTEmail",
+            "args": {},
+            "rets": {}
+        },
+        {
+            "name": "queryUserInfo",
+            "args": {},
+            "rets": {}
+        }
+    ]
+}
