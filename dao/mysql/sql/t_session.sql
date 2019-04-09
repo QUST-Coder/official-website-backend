@@ -1,4 +1,4 @@
-CREATE TABLE `t_session`  (
+CREATE TABLE `{table}`  (
   `f_id` int(11) NOT NULL AUTO_INCREMENT,
   `f_session` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'sessionId',
   `f_data` varchar(4096) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'session数据',
