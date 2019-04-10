@@ -4,7 +4,6 @@ node_modules
 *.log
 .gitignore
 .eslintignore
-.eslintrc.json
 app_log
 database
 package-lock.json

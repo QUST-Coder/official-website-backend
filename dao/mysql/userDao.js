@@ -43,13 +43,13 @@ class userDao extends BaseDao {
                 }
                 args.push(userInfo[this.fields[key]]);
             }
-            if (method == "insert") {
+            if (method === "insert") {
                 return {
                     keys: keys.join(","),
                     values: values.join(","),
                     args
                 };
-            } else if (method == "update") {
+            } else if (method === "update") {
                 return {
                     keys: keys.join("=?,") + "=?",
                     args: args.push(userInfo.userId)
@@ -69,7 +69,7 @@ class userDao extends BaseDao {
             let selectSql = `select f_id from ${this.table}`;
             let selectRows = await database.query(selectSql, [], instance);
 
-            if (selectRows.length == 0) {
+            if (selectRows.length === 0) {
                 //insert
                 let meta = this.genMeta("insert", userInfo);
                 let sql = `insert into ${this.table} (${meta.keys}) values (${meta.values})`;
