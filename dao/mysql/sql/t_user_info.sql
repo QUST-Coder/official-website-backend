@@ -1,0 +1,20 @@
+CREATE TABLE `{table}`  (
+  `f_id` int(11) NOT NULL AUTO_INCREMENT,
+  `f_user_id` int(11) NOT NULL COMMENT 'user_auth表的f_id',
+  `f_nickname` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '昵称',
+  `f_qust_email` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '校内邮件',
+  `f_school` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '学校',
+  `f_grade` datetime(0) NULL DEFAULT NULL COMMENT '年级',
+  `f_brithday` datetime(0) NULL DEFAULT NULL COMMENT '生日',
+  `f_gander` int(8) NULL DEFAULT NULL COMMENT '性别',
+  `f_avatar_url` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '头像',
+  `f_intro` varchar(512) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '个性签名',
+  `f_college` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '学院',
+  `f_major` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '专业',
+  `f_create_time` datetime(0) NOT NULL DEFAULT NOW() COMMENT '创建时间',
+  `f_edit_time` datetime(0) NOT NULL DEFAULT NOW() ON UPDATE NOW() COMMENT '修改时间',
+  PRIMARY KEY (`f_id`) USING BTREE,
+  UNIQUE INDEX `uniq_userid`(`f_user_id`) USING BTREE COMMENT 'uid',
+  UNIQUE INDEX `uniq_nickname`(`f_nickname`) USING BTREE,
+  UNIQUE INDEX `uniq_qustmail`(`f_qust_email`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
