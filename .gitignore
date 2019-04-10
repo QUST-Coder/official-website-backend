@@ -8,3 +8,4 @@ app_log
 database
 package-lock.json
 config/*.hjson
+.nyc_output

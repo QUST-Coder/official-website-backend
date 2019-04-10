@@ -157,4 +157,5 @@ describe("login handler test", () => {
             })()
         })
     })
+    return;
 })
