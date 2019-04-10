@@ -7,4 +7,5 @@ node_modules
 .eslintrc.json
 app_log
 database
+package-lock.json
 config/*.hjson
