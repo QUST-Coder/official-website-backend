@@ -7,7 +7,7 @@
     "build": "node ./builder/index.js",
     "start": "node index.js",
     "test": "nyc mocha --exit",
-    "test-with-coverage": "istanbul cover _mocha --exit --report lcovonly -- -R spec && cat ./coverage/lcov.info | codacy-coverage && rm -rf ./coverage"
+    "test-with-coverage": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- -R spec --exit && cat ./coverage/lcov.info | codacy-coverage --token 665bcbb6629a4b8c989510d9133660d8 && rm -rf ./coverage"
   },
   "author": "RBwang",
   "license": "ISC",
