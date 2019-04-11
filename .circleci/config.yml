@@ -15,12 +15,12 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
-      # - run:
-      #     name: test
-      #     command: npm test
-      # - run:
-      #     name: code-coverage
-      #     command: './node_modules/.bin/nyc report --reporter=text-lcov'
+      - run:
+        name: test
+          command: npm run test
+      - run:
+          name: code-coverage
+          command: npm run test-with-coverage
       # - store_artifacts:
       #     path: test-results.xml
       #     prefix: tests
