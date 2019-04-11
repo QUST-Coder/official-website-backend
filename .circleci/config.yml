@@ -16,7 +16,7 @@ jobs:
           paths:
             - ./node_modules
       - run:
-        name: test
+          name: test
           command: npm run test
       - run:
           name: code-coverage
