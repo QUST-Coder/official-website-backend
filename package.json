@@ -6,8 +6,8 @@
   "scripts": {
     "build": "node ./builder/index.js",
     "start": "node index.js",
-    "test": "mocha --timeout=4000 --exit",
-    "test-with-coverage": "istanbul cover node_modules/mocha/bin/_mocha --timeout=4000 --report lcovonly -- -R spec --exit && cat ./coverage/lcov.info | codacy-coverage --token 665bcbb6629a4b8c989510d9133660d8 && rm -rf ./coverage"
+    "test": "mocha --timeout=10000 --exit",
+    "test-with-coverage": "istanbul cover node_modules/mocha/bin/_mocha --timeout=10000 --report lcovonly -- -R spec --exit && cat ./coverage/lcov.info | codacy-coverage --token 665bcbb6629a4b8c989510d9133660d8 && rm -rf ./coverage"
   },
   "author": "RBwang",
   "license": "ISC",
