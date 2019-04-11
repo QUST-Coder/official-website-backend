@@ -1,0 +1,13 @@
+{
+    "functions": [
+        {
+            "name": "setAvatar",
+            "args": {
+                "avatar": "string"
+            },
+            "rets": {
+                "avatarUrl": "string"
+            }
+        }
+    ]
+}

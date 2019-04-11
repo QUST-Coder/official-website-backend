@@ -83,3 +83,5 @@ class Main extends BaseClass {
 
 const app = new Main();
 app.start();
+
+module.exports = app;
