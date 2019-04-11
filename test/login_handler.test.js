@@ -30,7 +30,7 @@ describe("login handler test", () => {
                 expect(rsp.error.msg).to.equal("success");
                 done();
             })()
-        })
+        }).timeout(10000);
         it("test invalid username", (done) => {
             (async () => {
                 const loginHandler = await getLoginHandler();
