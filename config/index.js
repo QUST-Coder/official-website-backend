@@ -31,21 +31,22 @@ async function init() {
                     sessionExpireTime: 5 * 60 * 1000
                 }
             },
-            db_config: {
-                db_type: "mysql",
-                db_user: {
-                    user: "user_test",
-                    password: (new Buffer("SEBBaDBJZzk=", "base64").toString()),
-                    host: (new Buffer("MTM5LjE5OS4xNi4xNw==", "base64").toString()),
-                    port: "3306",
-                    database: "db_official_site_test"
-                }
+            // db_config: {
+            //     db_type: "mysql",
+            //     db_user: {
+            //         user: "user_test",
+            //         password: (new Buffer("SEBBaDBJZzk=", "base64").toString()),
+            //         host: (new Buffer("MTM5LjE5OS4xNi4xNw==", "base64").toString()),
+            //         port: "3306",
+            //         database: "db_official_site_test"
+            //     }
 
-            },
+            // },
         };
         return;
+    }else{
+        await configLoader.add("app_config.hjson");
     }
-    await configLoader.add("app_config.hjson");
     await configLoader.add("db_config.hjson");
 }
 module.exports = {

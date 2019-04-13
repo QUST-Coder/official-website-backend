@@ -21,9 +21,13 @@
     "koa-json": "^2.0.2",
     "koa-router": "^7.4.0",
     "koa2-cors": "^2.0.6",
+    "level-rocksdb": "^3.0.1",
+    "levelup": "^4.0.1",
     "moment": "^2.24.0",
     "mongodb": "^3.2.2",
     "mysql": "^2.16.0",
+    "rocksdb": "^3.0.3",
+    "stream-to-promise": "^2.2.0",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"
   },
