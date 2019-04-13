@@ -50,7 +50,7 @@ class SessionDao extends BaseDao {
             let rows = await database.query(sql, args, instance);
             return rows[0];
         } catch (err) {
-            this.logger.error(err);
+            this.logger.error(`getSession Error|err=${err.message}`);
             throw err;
         }
     }

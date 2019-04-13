@@ -77,7 +77,7 @@ class AuthDao extends BaseDao {
                 return { verify: false };
             }
         } catch (err) {
-            this.logger.error(`verify Error|args=${JSON.stringify(userName, password)}|err=${err.message}`);
+            this.logger.error(`verify Error|args=${JSON.stringify({ userName, password })}|err=${err.message}`);
             throw err;
         }
     }
@@ -96,7 +96,7 @@ class AuthDao extends BaseDao {
             this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
             return rows;
         } catch (err) {
-            this.logger.error(`setUser Error|args=${JSON.stringify(userName, password, email)}|err=${err.message}`);
+            this.logger.error(`setUser Error|args=${JSON.stringify({ userName, password, email })}|err=${err.message}`);
             throw err;
         }
     }
@@ -172,7 +172,7 @@ class AuthDao extends BaseDao {
             this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
             return rows;
         } catch (err) {
-            this.logger.error(`changePassword Error|email=${userName}|err=${err.message}`);
+            this.logger.error(`changePassword Error|userName=${userName}|err=${err.message}`);
             throw err;
         }
     }
