@@ -12,15 +12,16 @@ let loadDao = async (type) => {
         daoMap[daoName] = dao;
     });
 };
-
-
-if (db_config.db_type === "mongo") {
-    loadDao("mongo");
+function init() {
+    if (!db_config) {
+        loadDao("rocksdb");
+    } else if (db_config.db_type === "mongo") {
+        loadDao("mongo");
+    } else if (db_config.db_type === "mysql") {
+        loadDao("mysql");
+    }
 }
-
-if (db_config.db_type === "mysql") {
-    loadDao("mysql");
-}
+init();
 
 let getDao = (daoName) => {
     if (daoMap[daoName]) {
@@ -29,4 +30,5 @@ let getDao = (daoName) => {
         throw new Error("dao not found! daoname:" + daoName);
     }
 };
+getDao.init = init;
 module.exports = getDao;
