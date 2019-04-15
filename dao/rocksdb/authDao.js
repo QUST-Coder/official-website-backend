@@ -1,31 +1,31 @@
 /**
  * @author RBWang
  * @version 1.0
- * @since 2019.4.5
+ * @since 2019.4.13
  */
 "use strict";
-const database = require("../../utils/mysql_util");
-const { configs } = require("../../config");
-const instance = configs["db_config"]["db_user"];
 const BaseDao = require("../../base/base_dao");
 const assert = require("assert");
 const crypto = require("crypto");
+const { configs } = require("../../config");
 const {
     salt,
     user_name_limit,
 } = configs["app_config"]["server_base"];
+const uuid = require("uuid/v1");
+const database = require("../../utils/rocksdb_util");
 
 class AuthDao extends BaseDao {
-
     constructor() {
         super(...arguments);
-        this.table = this.table_prefix + "_user_auth";
+        this.table = "authTable_";
+        this.emailMap = "email_";
         this.salt = salt;
         this.zeroPass = crypto.createHash("sha1").update("").digest("hex").toUpperCase();
         this.emailReg = new RegExp("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$");
         this.illegalNameReg = new RegExp("^[a-zA-Z0-9_]{4,16}$");
-        this.instance = instance;
     }
+
     /**
      * 校验保存至数据库的用户信息是否合法
      * @param {string} userName 
@@ -62,16 +62,13 @@ class AuthDao extends BaseDao {
      */
     async verify(userName, password) {
         try {
-            let sql = `select f_user_id as userId, f_status as status from ${this.table} where f_userName = ? and f_password = ?`;
-            let args = [userName, this.password(password)];
-            //query时尽量使用mysql库的预编译模式，有可靠的防注入能力
-            let rows = await database.query(sql, args, instance);
-            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
-            if (rows.length === 1) {
+            let data = await database.get(this.table + userName);
+            this.logger.debug(`database exec success|op=verify|args=${JSON.stringify([userName, password])}|ret=${JSON.stringify(data)}`);
+            if (data.f_password && data.f_password === this.password(password)) {
                 return {
                     verify: true,
-                    userId: rows[0]["userId"],
-                    status: rows[0]["status"]
+                    userId: data["f_user_id"],
+                    status: data["f_status"]
                 };
             } else {
                 return { verify: false };
@@ -90,13 +87,31 @@ class AuthDao extends BaseDao {
     async setUser(userName, password, email) {
         this.checkArgs(...arguments);
         try {
-            let sql = `insert into ${this.table} (f_username,f_password,f_email) values (?,?,?)`;
-            let args = [userName, this.password(password), email];
-            let rows = await database.query(sql, args, instance);
-            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
-            return rows;
+            let check = await Promise.all([
+                this.uniqName(userName),
+                this.uniqEmail(email)
+            ]);
+            if (check[0] || check[1]) {
+                throw new Error("用户名/邮箱已注册");
+            }
+            let args = {
+                f_user_id: uuid(),
+                f_username: userName,
+                f_password: this.password(password),
+                f_email: email,
+                f_create_time: Date.now(),
+                f_edit_time: Date.now(),
+                f_status: false
+            };
+            let ops = [
+                { type: "put", key: this.table + userName, value: args },
+                { type: "put", key: this.table + this.emailMap + email, value: userName }
+            ];
+            await database.batch(ops);
+            this.logger.debug(`database exec success|op=setUser|args=${JSON.stringify(args)}|ret=true`);
+            return true;
         } catch (err) {
-            this.logger.error(`setUser Error|args=${JSON.stringify({ userName, password, email })}|err=${err.message}`);
+            this.logger.error(`setUser Error|args=${JSON.stringify(userName, password, email)}|err=${err.message}`);
             throw err;
         }
     }
@@ -106,11 +121,15 @@ class AuthDao extends BaseDao {
      */
     async activeUser(userName) {
         try {
-            let sql = `update ${this.table} set f_status=1 where f_username = ?`;
-            let args = [userName];
-            let rows = await database.query(sql, args, instance);
-            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
-            return rows;
+            let data = this.uniqName(userName);
+            if (!data) {
+                throw new Error("用户未注册！");
+            }
+            data.f_status = true;
+            data.f_edit_time = Date.now();
+            await database.put(this.table + userName, data);
+            this.logger.debug(`database exec success|op=activeUser|args=${JSON.stringify(data)}|ret=true`);
+            return true;
         } catch (err) {
             this.logger.error(`activeUser Error|userName=${userName}|err=${err.message}`);
             throw err;
@@ -122,13 +141,17 @@ class AuthDao extends BaseDao {
      */
     async deActiveUser(userName) {
         try {
-            let sql = `update ${this.table} set f_status=0 where f_username = ?`;
-            let args = [userName];
-            let rows = await database.query(sql, args, instance);
-            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
-            return rows;
+            let data = this.uniqName(userName);
+            if (!data) {
+                throw new Error("用户未注册！");
+            }
+            data.f_status = false;
+            data.f_edit_time = Date.now();
+            await database.put(this.table + userName, data);
+            this.logger.debug(`database exec success|op=deActiveUser|args=${JSON.stringify(data)}|ret=true`);
+            return true;
         } catch (err) {
-            this.logger.error(`deActive Error|userName=${userName}|err=${err.message}`);
+            this.logger.error(`deActiveUser Error|userName=${userName}|err=${err.message}`);
             throw err;
         }
     }
@@ -138,13 +161,11 @@ class AuthDao extends BaseDao {
      */
     async uniqName(userName) {
         try {
-            let sql = `select count(*) from ${this.table} where f_username = ?`;
-            let args = [userName];
-            let rows = await database.query(sql, args, instance);
-            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
-            return rows[0]["count(*)"];
+            let data = await database.get(this.table + userName);
+            this.logger.debug(`database exec success|op=uniqName|ret=${JSON.stringify(data)}`);
+            return data;
         } catch (err) {
-            this.logger.error(`uniqName Error|userName=${userName}|err=${err.message}`);
+            this.logger.error(`uniqName Error|args=${JSON.stringify(userName)}|err=${err.message}`);
             throw err;
         }
     }
@@ -154,23 +175,22 @@ class AuthDao extends BaseDao {
      */
     async uniqEmail(email) {
         try {
-            let sql = `select count(*) from ${this.table} where f_email = ?`;
-            let args = [email];
-            let rows = await database.query(sql, args, instance);
-            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
-            return rows[0]["count(*)"];
+            let data = await database.get(this.table + this.emailMap + email);
+            this.logger.debug(`database exec success|op=uniqueEmail|ret=${JSON.stringify(data)}`);
+            return data;
         } catch (err) {
-            this.logger.error(`uniqName Error|email=${email}|err=${err.message}`);
+            this.logger.error(`uniqueEmail Error|args=${JSON.stringify(email)}|err=${err.message}`);
             throw err;
         }
     }
     async changePassword(userName, password) {
         try {
-            let sql = `update ${this.table} set f_password = ? where f_username = ?`;
-            let args = [this.password(password), userName];
-            let rows = await database.query(sql, args, instance);
-            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
-            return rows;
+            let data = await database.get(this.table + userName);
+            data.f_password = this.password(password);
+            data.f_edit_time = Date.now();
+            await database.put(this.table + userName, data);
+            this.logger.debug(`database exec success|op=changePassword|args=${JSON.stringify(data)}|ret=true`);
+            return true;
         } catch (err) {
             this.logger.error(`changePassword Error|userName=${userName}|err=${err.message}`);
             throw err;

@@ -13,6 +13,9 @@ class logger {
         this.options = {};
         this.date = moment().format("YYYYMMDD");
         this._initCommon(name);
+        if (process.env.TEST_ENV === "true") {
+            this._log = () => { };
+        }
     }
     _dateUpdate() {
         let nowDate = moment().format("YYYYMMDD");

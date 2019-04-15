@@ -68,10 +68,10 @@ class loginHandler extends BaseHandler {
         try {
             this.logger.info(access_token);
             await sessionServer.expireSession(access_token);
-            return { error: { code: 0, msg: "success" }, };
+            return { error: { code: 0, msg: "success" } };
         } catch (err) {
             this.logger.error(err);
-            return { error: { code: -1, msg: err.message }, };
+            return { error: { code: -1, msg: err.message } };
         }
     }
 

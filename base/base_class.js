@@ -4,7 +4,7 @@ const logInstances = {};
 class ExtError extends Error {
     constructor() {
         super(...arguments);
-        if (arguments.length == 2) {
+        if (arguments.length === 2) {
             this.code = arguments[0];
             this.message = arguments[1];
         } else {
@@ -17,7 +17,7 @@ class BaseClass {
     constructor() {
         this.Error = ExtError;
         let filename = this.constructor.name;
-        if (logInstances[filename]) {
+        if (logInstances[filename] !== undefined) {
             this.logger = logInstances[filename];
         } else {
             this.logger = createLogger(filename);
