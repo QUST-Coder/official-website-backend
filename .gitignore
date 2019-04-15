@@ -4,8 +4,8 @@ node_modules
 *.log
 .gitignore
 .eslintignore
-.eslintrc.json
 app_log
 database
-data/*
+package-lock.json
 .nyc_output
+data/*

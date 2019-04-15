@@ -1,9 +1,0 @@
-{
-    "port":"8888",
-    server_base:{
-        salt:"111111111111111111111",
-        user_name_limit:32,
-        table_prefix:"t",
-        sessionExpireTime:7200000
-    }
-}

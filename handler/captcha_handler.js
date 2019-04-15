@@ -13,10 +13,6 @@ class captchaHandler extends BaseHandler {
                     code: 0,
                     msg: "success"
                 },
-                error: {
-                    code: 0,
-                    msg: ""
-                },
                 img: ""
             };
         } catch (err) {
@@ -32,10 +28,6 @@ class captchaHandler extends BaseHandler {
                 error: {
                     code: 0,
                     msg: "success"
-                },
-                error: {
-                    code: 0,
-                    msg: ""
                 }
             };
         } catch (err) {

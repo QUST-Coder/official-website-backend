@@ -20,7 +20,33 @@ class ConfigLoader extends BaseClass {
 
 async function init() {
     let configLoader = new ConfigLoader();
-    await configLoader.add("app_config.hjson");
+    if (!fs.existsSync(path.join(__dirname, "app_conig.hjson"))) {
+        module.exports.configs = {
+            app_config: {
+                port: "8888",
+                server_base: {
+                    salt: "salt",
+                    user_name_limit: 32,
+                    table_prefix: "t",
+                    sessionExpireTime: 5 * 60 * 1000
+                }
+            },
+            // db_config: {
+            //     db_type: "mysql",
+            //     db_user: {
+            //         user: "user_test",
+            //         password: (new Buffer("SEBBaDBJZzk=", "base64").toString()),
+            //         host: (new Buffer("MTM5LjE5OS4xNi4xNw==", "base64").toString()),
+            //         port: "3306",
+            //         database: "db_official_site_test"
+            //     }
+
+            // },
+        };
+        return;
+    }else{
+        await configLoader.add("app_config.hjson");
+    }
     await configLoader.add("db_config.hjson");
 }
 module.exports = {

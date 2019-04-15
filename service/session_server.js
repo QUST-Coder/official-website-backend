@@ -43,7 +43,7 @@ class SessionServer extends BaseService {
                 return { sessionStatus, session };//session已过期
             }
             sessionStatus = sessionInfo.f_status;
-            if (sessionStatus == 0) {
+            if (sessionStatus === 0) {
                 sessionDao.renewedSession(session);
             }
             return {
