@@ -12,4 +12,4 @@ CREATE TABLE `{table}` (
   KEY `f_comment_id_index` (`f_comment_id`) USING BTREE,
   KEY `f_post_id_index` (`f_post_id`) USING BTREE,
   KEY `f_parent_id_index` (`f_parent_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

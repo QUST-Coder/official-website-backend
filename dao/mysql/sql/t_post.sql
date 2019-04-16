@@ -12,4 +12,4 @@ CREATE TABLE `{table}` (
   `f_edit_time` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '修改时间',
   PRIMARY KEY (`f_post_id`) USING BTREE,
   UNIQUE INDEX `uniq_post_page` (`f_post_id`,`f_post_page`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

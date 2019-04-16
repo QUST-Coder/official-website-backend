@@ -7,16 +7,46 @@ const assert = require("assert");
 class PostDao extends BaseDao {
     constructor() {
         super(...arguments);
-        this.postTable = "_post";
-        this.commentTable = "_post_comment";
-        this.postHistory = "_post_history";
-        this.commentHistory = "_post_comment_history";
+        this.postTable = this.table_prefix + "_post";
+        this.commentTable = this.table_prefix + "_post_comment";
+        this.postHistory = this.table_prefix + "_post_history";
+        this.commentHistory = this.table_prefix + "_post_comment_history";
+        this.instance = instance;
     }
     async searchTitle() {
 
     }
+
     async searchContext() {
 
+    }
+
+    async getPost(postId) {
+        try {
+            let postSql = `select * from ${this.postTable} where f_post_id = ?`;
+            let historySql = `select f_create_time from ${this.postHistory} where f_post_id = ?`;
+            let postRows = await database.query(postSql, [postId], instance);
+            if (postRows.length === 0) {
+                throw new Error("文章不存在");
+            }
+            postRows = postRows[0];
+            let histRows = await database.query(historySql, [postId], instance);
+            histRows = histRows.forEach(row => {
+                return { createTime: row["f_create_time"] };
+            });
+            return {
+                title: postRows["f_title"],
+                type: postRows["f_type"],
+                context: postRows["f_context"],
+                tags: postRows["f_tags"],
+                userId: postRows["f_user_id"],
+                version: postRows["f_version"],
+                hVersions: histRows
+            };
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
     }
 
     async savePost(title, type, context, tags, userId, version, postId) {
@@ -52,6 +82,16 @@ class PostDao extends BaseDao {
                                     });
                                 });
                             };
+                            let commit = () => {
+                                return new Promise((resolve, _reject) => {
+                                    connection.commit((err) => {
+                                        if (err) {
+                                            _reject(err);
+                                        }
+                                        resolve();
+                                    });
+                                });
+                            };
                             try {
                                 let getNowContextSql = `select f_context,f_version from ${this.postTable} where f_post_id = ?`;
                                 let newContext = context;
@@ -59,11 +99,12 @@ class PostDao extends BaseDao {
                                 let nowContextRows = await querySql(getNowContextSql, [postId]);
                                 let nowContext = nowContextRows[0]["f_context"];
                                 let nowVersion = nowContextRows[0]["f_version"];
-                                assert(newVersion >= nowVersion, "版本号不符合要求");
+                                assert(newVersion > nowVersion, "版本号不符合要求");
                                 let saveSql = `insert into ${this.postHistory} (f_post_id,f_post_page,f_context,f_version) values (?,?,?,?)`;
                                 await querySql(saveSql, [postId, 0, nowContext, nowVersion]);
                                 let updateSql = `update ${this.postTable} set f_title = ?,f_type = ?,f_context = ?,f_tags = ?,f_version = ?`;
                                 await querySql(updateSql, [title, type, newContext, tags, version]);
+                                await commit();
                                 connection.release();
                                 resolve();
                             } catch (err) {

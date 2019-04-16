@@ -6,4 +6,4 @@ CREATE TABLE `{table}` (
   `f_edit_time` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '修改时间',
   PRIMARY KEY (`f_comment_id`) USING BTREE,
   UNIQUE KEY `uniq_version` (`f_comment_id`,`f_version`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
