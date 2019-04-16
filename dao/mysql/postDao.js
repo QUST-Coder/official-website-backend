@@ -13,12 +13,63 @@ class PostDao extends BaseDao {
         this.commentHistory = this.table_prefix + "_post_comment_history";
         this.instance = instance;
     }
-    async searchTitle() {
-
+    async setComment() {
+        //TODO
     }
-
-    async searchContext() {
-
+    async delComment() {
+        //TODO
+    }
+    async getComment() {
+        //TODO
+    }
+    async getPostListByContext() {
+        //TODO
+    }
+    async delPost(postId) {
+        try {
+            let sql = `update ${this.postTable} set f_status = 1 where f_post_id = ?`;
+            let args = [postId];
+            let rows = await database.query(sql, args, instance);
+            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
+            return rows;
+        } catch (err) {
+            this.logger.error(`delete post error|err=${err.message}`);
+            throw err;
+        }
+    }
+    /**
+     * 根据index获取post列表
+     * @param {Object} index 
+     */
+    async getPostList(index) {
+        try {
+            let where = [];
+            let args = [];
+            if (index.userId) {
+                where.push("f_user_id=?");
+                args.push(index.userId);
+            }
+            if (index.type) {
+                where.push("f_type");
+                args.push(index.type);
+            }
+            if (index.title) {
+                where.push(`f_title like '%${index.title.replace(/'/g, "\\'")}%'`);
+            }
+            if (index.tags) {
+                let tags = index.tags.split("|");
+                for (let i = 0; i < tags.length; i++) {
+                    where.push(`f_tags like '%${tags.replace(/'/g, "\\'")}%'`);
+                }
+            }
+            let sql = `select f_post_id,f_create_time,f_edit_time,f_version,f_status from ${this.postTable} where ${where.join(" and ")} order by f_edit_time desc`;
+            let rows = await database.query(sql, args, instance);
+            this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
+            return rows;
+        } catch (err) {
+            this.logger.error(`get post list err|err=${err.message}`);
+            throw err;
+        }
     }
 
     async getPost(postId) {
@@ -49,7 +100,7 @@ class PostDao extends BaseDao {
         }
     }
 
-    async savePost(title, type, context, tags, userId, version, postId) {
+    async setPost(title, type, context, tags, userId, version, postId) {
         try {
             if (postId) {
                 await new Promise((resolve, reject) => {
@@ -99,11 +150,11 @@ class PostDao extends BaseDao {
                                 let nowContextRows = await querySql(getNowContextSql, [postId]);
                                 let nowContext = nowContextRows[0]["f_context"];
                                 let nowVersion = nowContextRows[0]["f_version"];
-                                assert(newVersion > nowVersion, "版本号不符合要求");
-                                let saveSql = `insert into ${this.postHistory} (f_post_id,f_post_page,f_context,f_version) values (?,?,?,?)`;
-                                await querySql(saveSql, [postId, 0, nowContext, nowVersion]);
-                                let updateSql = `update ${this.postTable} set f_title = ?,f_type = ?,f_context = ?,f_tags = ?,f_version = ?`;
-                                await querySql(updateSql, [title, type, newContext, tags, version]);
+                                assert(newVersion !== nowVersion, "文章版本号不符合要求");
+                                let setSql = `insert into ${this.postHistory} (f_post_id,f_post_page,f_context,f_version) values (?,?,?,?)`;
+                                await querySql(setSql, [postId, 0, nowContext, nowVersion]);
+                                let updateSql = `update ${this.postTable} set f_title = ?,f_type = ?,f_context = ?,f_tags = ?,f_version = ? where f_post_id = ?`;
+                                await querySql(updateSql, [title, type, newContext, tags, version, postId]);
                                 await commit();
                                 connection.release();
                                 resolve();
