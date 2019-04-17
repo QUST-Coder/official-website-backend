@@ -11,8 +11,9 @@ class ApiRouter extends BaseRouter {
             let { func, args } = req;
             this.logger.info(`req|requestId=${ctx.requestId}|body=${JSON.stringify(req)}`);
             let handler = Handler.getHandler(func);
+            let { login, userData } = args;
             args = validate(func, args);
-            let rsp = await handler.__proto__[func].apply(handler, args);
+            let rsp = await handler.__proto__[func].apply(handler, [...args, userData, login]);
             this.logger.info(`rsp|requestId=${ctx.requestId}|body=${JSON.stringify(rsp)}`);
             ctx.body = rsp;
         } catch (err) {

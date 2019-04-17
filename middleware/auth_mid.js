@@ -6,6 +6,16 @@ class AuthMiddleware extends BaseClass {
         super(...arguments);
         self = this;
     }
+    /**
+     * 鉴权中间件，用于/api路由下JSON-API的鉴权
+     * 实现鉴权的第一步：添加鉴权信息到传递的args对象中
+     * 设计思路为：从请求的Header中取出access_token字段，核验该字段的有效性，如果有效
+     * 则会从SessionServer中拉取到一组UserData，并为接口的args对象添加该属性，以及一
+     * 个login字段。login=true代表用户已登陆，且UserData有效；login=false代表用户
+     * 未登陆，且UserData字段无效。
+     * @param {*} ctx 
+     * @param {*} next 
+     */
     async auth(ctx, next) {
         try {
             let accessToken = ctx.request.header["access_token"];
