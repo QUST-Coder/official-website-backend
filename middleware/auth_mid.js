@@ -12,9 +12,13 @@ class AuthMiddleware extends BaseClass {
             self.logger.info(`hearer AccessToken|${accessToken || ""}`);
             let req = ctx.request.body;
             let { args } = req;
+            if (args.login || args.userData) {
+                throw new Error("构造了非法请求！");
+            }
             if (!accessToken && !args.access_token) {
                 //无任何token
                 args.login = false;
+                args.userData = {};
                 //token不匹配
             } else if (args.access_token && accessToken && (args.access_token != accessToken)) {
                 throw new Error("报文密钥不匹配");
