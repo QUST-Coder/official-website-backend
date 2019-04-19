@@ -65,13 +65,25 @@ class PostDao extends BaseDao {
             let sql = `select f_post_id,f_create_time,f_edit_time,f_version,f_user_id,f_status from ${this.postTable} where ${where.join(" and ")} order by f_edit_time desc`;
             let rows = await database.query(sql, args, instance);
             this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
-            return rows;
+            return rows.forEach(row => {
+                return {
+                    postId: row.f_post_id,
+                    createTime: row.f_create_time,
+                    editTime: row.f_edit_time,
+                    version: row.f_version,
+                    userId: row.f_user_id,
+                    status:row.f_status
+                };
+            });
         } catch (err) {
             this.logger.error(`get post list err|err=${err.message}`);
             throw err;
         }
     }
-
+    /**
+     * 获取Post内容
+     * @param {string} postId 
+     */
     async getPost(postId) {
         try {
             let postSql = `select * from ${this.postTable} where f_post_id = ?`;
@@ -80,10 +92,13 @@ class PostDao extends BaseDao {
             if (postRows.length === 0) {
                 throw new Error("文章不存在");
             }
+            if (postRows[0]["f_staus"] === 1) {
+                throw new Error("文章已删除");
+            }
             postRows = postRows[0];
             let histRows = await database.query(historySql, [postId], instance);
             histRows = histRows.forEach(row => {
-                return { createTime: row["f_create_time"] };
+                return (new Date(row["f_create_time"])).getTime();
             });
             return {
                 title: postRows["f_title"],
