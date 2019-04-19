@@ -5,7 +5,7 @@ const schema = {
         type: Joi.string().optional(),
         title: Joi.string().optional(),
         tags: Joi.string().optional()
-    }).require()
+    }).required()
 };
 
 module.exports.schema = schema;

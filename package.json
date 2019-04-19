@@ -6,8 +6,8 @@
   "scripts": {
     "build": "node ./builder/index.js",
     "start": "node index.js",
-    "test": "mocha --exit",
-    "test-with-coverage": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- -R spec --exit && cat ./coverage/lcov.info | codacy-coverage --token 665bcbb6629a4b8c989510d9133660d8 && rm -rf ./coverage"
+    "test": "mocha --timeout=10000 --exit",
+    "test-with-coverage": "istanbul cover node_modules/mocha/bin/_mocha --timeout=10000 --report lcovonly -- -R spec --exit && cat ./coverage/lcov.info | codacy-coverage --token 665bcbb6629a4b8c989510d9133660d8 && rm -rf ./coverage"
   },
   "author": "RBwang",
   "license": "ISC",
@@ -21,13 +21,9 @@
     "koa-json": "^2.0.2",
     "koa-router": "^7.4.0",
     "koa2-cors": "^2.0.6",
-    "level-rocksdb": "^3.0.1",
-    "levelup": "^4.0.1",
     "moment": "^2.24.0",
     "mongodb": "^3.2.2",
     "mysql": "^2.16.0",
-    "rocksdb": "^3.0.3",
-    "stream-to-promise": "^2.2.0",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"
   },

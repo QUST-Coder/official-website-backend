@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const schema = {
-    postId: Joi.string().require()
+    postId: Joi.string().required()
 };
 
 module.exports.schema = schema;

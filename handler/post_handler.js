@@ -1,7 +1,7 @@
 "use strict";
 const BaseHandler = require("../base/base_handler");
 const postDao = require("../dao")("postDao");
-const { checkPrivilege } = require("../service/privilege_service");
+const { checkPrivilege } = require("../service/privilege_server");
 class postHandler extends BaseHandler {
     constructor() {
         super(...arguments);
@@ -63,14 +63,8 @@ class postHandler extends BaseHandler {
             let postList = [];
             for (let row of postRows) {
                 if (row.f_status === 0) {
-                    postList.push({
-                        postId: row.f_post_id,
-                        createTime: row.f_create_time,
-                        editTime: row.f_edit_time,
-                        version: row.f_version,
-                        userId: row.f_user_id
-                        //arthorInfo: //TODO
-                    });
+                    //row.authorInfo = //TODO
+                    postList.push(row);
                 }
             }
             return {

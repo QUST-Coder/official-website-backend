@@ -1,9 +1,9 @@
 const Joi = require("joi");
 const schema = {
-    type: Joi.string().require(),
-    title: Joi.string().require(),
-    context: Joi.string().require(),
-    tags: Joi.string().require(),
+    type: Joi.string().required(),
+    title: Joi.string().required(),
+    context: Joi.string().required(),
+    tags: Joi.string().required(),
     postId: Joi.string().optional().allow("")
 };
 
