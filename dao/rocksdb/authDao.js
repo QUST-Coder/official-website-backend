@@ -64,7 +64,7 @@ class AuthDao extends BaseDao {
         try {
             let data = await database.get(this.table + userName);
             this.logger.debug(`database exec success|op=verify|args=${JSON.stringify([userName, password])}|ret=${JSON.stringify(data)}`);
-            if (data.f_password && data.f_password === this.password(password)) {
+            if (data && data.f_password && data.f_password === this.password(password)) {
                 return {
                     verify: true,
                     userId: data["f_user_id"],

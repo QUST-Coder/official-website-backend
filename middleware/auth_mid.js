@@ -38,7 +38,7 @@ class AuthMiddleware extends BaseClass {
             }
             if (args.access_token) {
                 let sessionInfo = await sessionServer.getSession(args.access_token);
-                if (sessionInfo.sessionStatus === 0) {
+                if (sessionInfo.sessionStatus === 0 || sessionInfo.sessionStatus === 1) {
                     args.login = true;
                     args.userData = sessionInfo.userData;
                 }

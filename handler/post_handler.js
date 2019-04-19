@@ -20,7 +20,7 @@ class postHandler extends BaseHandler {
                 version = parseInt(postData.version) + 1 + "";
                 await postDao.setPost(title, type, context, tags, userId, version, postId);
             } else {
-                postId = await postDao.setPost(title, type, context, tags, userId, version, false);
+                postId = await postDao.setPost(title, type, context, tags, userId, version);
             }
             return {
                 error: {

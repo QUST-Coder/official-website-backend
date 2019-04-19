@@ -22,10 +22,10 @@ class rocksdbUtil {
      * @param {*} value 
      */
     put(key, value) {
-        if (typeof value === "object") {
-            value = JSON.stringify(value);
-        }
         return new Promise((resolve, reject) => {
+            if (typeof value === "object") {
+                value = JSON.stringify(value);
+            }
             this.db.put(key, value, (err) => {
                 if (err) {
                     this.logger.error(`put data error|key=${key}|value=${JSON.stringify(value)}|err=${err.message}`);

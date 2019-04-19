@@ -10,15 +10,16 @@ class HandlerLoader extends BaseHandler {
      * 对需要鉴权的handler('v_'开头的handler)进行一层封装
      * @param {function} handler 
      */
-    authWarp(handler) {
-        return () => {
+    authWarp(handler, func) {
+        handler.__proto__[func] = async function () {
             let length = arguments.length;
             let login = arguments[length - 1];
             if (login === false) {
                 throw new Error("用户未登录！");
             }
-            handler.apply(this, arguments);
+            return await handler.__proto__["v_" + func].apply(handler, arguments);
         };
+        return handler;
     }
     __registHandler() {
         this.handlerMap = {};
@@ -33,7 +34,7 @@ class HandlerLoader extends BaseHandler {
                 if (!this.handlerMap[func]) {
                     if (func.match("v_") != null) {
                         func = func.replace("v_", "");
-                        this.handlerMap[func] = this.authWarp(handler);
+                        this.handlerMap[func] = this.authWarp(handler, func);
                     } else {
                         this.handlerMap[func] = handler;
                     }
