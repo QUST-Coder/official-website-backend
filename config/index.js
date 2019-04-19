@@ -32,7 +32,7 @@ async function init() {
                 }
             },
             db_config: {
-                db_type: "mysql",
+                db_type: "rocksdb",
                 db_user: {
                     user: "user_test",
                     password: (new Buffer("SEBBaDBJZzk=", "base64").toString()),

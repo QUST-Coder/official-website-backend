@@ -13,7 +13,7 @@ let loadDao = async (type) => {
     });
 };
 function init() {
-    if (!db_config) {
+    if (!db_config || db_config.db_type === "rocksdb") {
         loadDao("rocksdb");
     } else if (db_config.db_type === "mongo") {
         loadDao("mongo");
