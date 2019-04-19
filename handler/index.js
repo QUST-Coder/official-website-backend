@@ -11,7 +11,7 @@ class HandlerLoader extends BaseHandler {
      * @param {function} handler 
      */
     authWarp(handler) {
-        return async () => {
+        return () => {
             let length = arguments.length;
             let login = arguments[length - 1];
             if (login === false) {

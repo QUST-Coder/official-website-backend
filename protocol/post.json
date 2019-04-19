@@ -1,0 +1,41 @@
+{
+    "functions": [
+        {
+            "name": "setPost",
+            "args": {
+                "type":"int",
+                "title":"string",
+                "context":"string",
+                "tags":"string",
+                "option":{}
+            },
+            "rets": {
+                "postId":"string",
+                "version":"string"
+            }
+        },
+        {
+            "name": "getPost",
+            "args": {
+                "postId":"string"
+            },
+            "rets": {
+                "type":"int",
+                "title":"string",
+                "context":"string",
+                "tags":"string",
+                "version":"string",
+                "option":{}
+            }
+        },
+        {
+            "name": "getPostList",
+            "args": {
+                "index":{}
+            },
+            "rets": {
+                "postList":[]
+            }
+        }
+    ]
+}

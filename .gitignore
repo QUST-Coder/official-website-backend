@@ -9,3 +9,4 @@ database
 package-lock.json
 .nyc_output
 data/*
+test/devtest

@@ -62,7 +62,7 @@ class PostDao extends BaseDao {
                     where.push(`f_tags like '%${tags.replace(/'/g, "\\'")}%'`);
                 }
             }
-            let sql = `select f_post_id,f_create_time,f_edit_time,f_version,f_status from ${this.postTable} where ${where.join(" and ")} order by f_edit_time desc`;
+            let sql = `select f_post_id,f_create_time,f_edit_time,f_version,f_user_id,f_status from ${this.postTable} where ${where.join(" and ")} order by f_edit_time desc`;
             let rows = await database.query(sql, args, instance);
             this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
             return rows;
@@ -173,7 +173,7 @@ class PostDao extends BaseDao {
                 (f_post_page,f_title,f_type,f_context,f_tags,f_user_id,f_version,f_status) 
                 values 
                 (?,?,?,?,?,?,?,?)`;
-                let args = [1, title, type, context, tags, userId, 0, 0];
+                let args = [1, title, type, context, tags, userId, version, 0];
                 let rows = await database.query(sql, args, instance);
                 let insertId = rows.insertId;
                 return insertId;
