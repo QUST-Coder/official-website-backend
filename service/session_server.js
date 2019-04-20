@@ -36,7 +36,7 @@ class SessionServer extends BaseService {
             if (!sessionInfo) {
                 return { sessionStatus };//未找到session
             }
-            let expireTime = sessionInfo.f_expire_time;
+            let expireTime = new Date(sessionInfo.f_expire_time);
             if (expireTime.getTime() < Date.now()) {
                 sessionStatus = 2;
                 sessionDao.expireSession(session);

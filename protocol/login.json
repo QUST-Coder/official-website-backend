@@ -5,8 +5,8 @@
             "args": {
                 "userName": "string",
                 "password": "string",
-                "email": "",
-                "captchaToken": ""
+                "email": "string",
+                "captchaToken": "string"
             },
             "rets": {
                 "access_token": "string"
@@ -17,7 +17,7 @@
             "args": {
                 "userName": "string",
                 "password": "string",
-                "captchaToken": ""
+                "captchaToken": "string"
             },
             "rets": {
                 "access_token": "string"

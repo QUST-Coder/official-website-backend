@@ -22,10 +22,10 @@ class rocksdbUtil {
      * @param {*} value 
      */
     put(key, value) {
-        if (typeof value === "object") {
-            value = JSON.stringify(value);
-        }
         return new Promise((resolve, reject) => {
+            if (typeof value === "object") {
+                value = JSON.stringify(value);
+            }
             this.db.put(key, value, (err) => {
                 if (err) {
                     this.logger.error(`put data error|key=${key}|value=${JSON.stringify(value)}|err=${err.message}`);
@@ -104,7 +104,7 @@ class rocksdbUtil {
      * 查找匹配前缀的
      * @param {*} prefix 
      */
-    find(prefix) {
+    async find(prefix) {
         try {
             let option = { keys: true, values: true, revers: false, limit: -1, fillCache: false };
             if (prefix) {
@@ -113,7 +113,16 @@ class rocksdbUtil {
             } else {
                 option.gte = "";
             }
-            return streamToPromise(this.db.createReadStream(option));
+            let kvs = await streamToPromise(this.db.createReadStream(option));
+            let ret = kvs.map(obj => {
+                try {
+                    obj.value = JSON.parse(obj.value);
+                    return obj;
+                } catch (err) {
+                    return obj;
+                }
+            });
+            return ret;
         } catch (err) {
             return [];
         }

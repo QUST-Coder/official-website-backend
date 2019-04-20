@@ -6,6 +6,21 @@ class HandlerLoader extends BaseHandler {
         super(...arguments);
         this.__registHandler();
     }
+    /**
+     * 对需要鉴权的handler('v_'开头的handler)进行一层封装
+     * @param {function} handler 
+     */
+    authWarp(handler, func) {
+        handler.__proto__[func] = async function () {
+            let length = arguments.length;
+            let login = arguments[length - 1];
+            if (login === false) {
+                throw new Error("用户未登录！");
+            }
+            return await handler.__proto__["v_" + func].apply(handler, arguments);
+        };
+        return handler;
+    }
     __registHandler() {
         this.handlerMap = {};
         let files = fs.readdirSync(__dirname);
@@ -17,7 +32,12 @@ class HandlerLoader extends BaseHandler {
             });
             funcNames.forEach(func => {
                 if (!this.handlerMap[func]) {
-                    this.handlerMap[func] = handler;
+                    if (func.match("v_") != null) {
+                        func = func.replace("v_", "");
+                        this.handlerMap[func] = this.authWarp(handler, func);
+                    } else {
+                        this.handlerMap[func] = handler;
+                    }
                 } else {
                     throw new Error("depulicate funcName, funcName:" + func);
                 }

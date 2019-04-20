@@ -29,7 +29,7 @@ class SessionDao extends BaseDao {
             assert(typeof data === "object", "data值必须为对象");
             let sessionData = {
                 f_session: session,
-                f_data: data,
+                f_data: JSON.stringify(data),
                 f_expire_time: moment(new Date(Date.now() + expireTime)).format("YYYY-MM-DD HH:mm:ss"),
                 f_status: flag ? 0 : 1
             };

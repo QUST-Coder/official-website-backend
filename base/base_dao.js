@@ -12,21 +12,21 @@ class BaseDao extends BaseClass {
     /**
      * MySql建表方法
      */
-    async createTable() {
+    async createTable(tableName) {
         try {
             if (db_config.db_type === "mysql") {
-                let drop = `DROP TABLE IF EXISTS ${this.table}`;
+                let drop = `DROP TABLE IF EXISTS ${tableName}`;
                 await mysql.query(drop, [], this.instance);
-                let filepath = path.join(__dirname, "../dao/mysql/sql", this.table + ".sql");
+                let filepath = path.join(__dirname, "../dao/mysql/sql", tableName + ".sql");
                 let sql = fs.readFileSync(filepath).toString();
-                sql = sql.replace("{table}", this.table);
+                sql = sql.replace("{table}", tableName);
                 let args = [];
                 let rows = await mysql.query(sql, args, this.instance);
                 this.logger.debug(`database exec success|sql=${sql}|args=${JSON.stringify(args)}|ret=${JSON.stringify(rows)}`);
                 return rows;
             }
         } catch (err) {
-            this.logger.error(`createTable Error|tableName=${this.table}|err=${err.message}`);
+            this.logger.error(`createTable Error|tableName=${tableName}|err=${err.message}`);
         }
     }
 }
