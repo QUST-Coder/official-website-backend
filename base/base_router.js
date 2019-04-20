@@ -6,7 +6,7 @@ const uuid = require("uuid/v1");
 class BaseRouter extends BaseClass {
     constructor() {
         super(...arguments);
-        this.init();
+        this.middleware = [];
     }
     init() {
         this.__router = Router();
@@ -15,9 +15,12 @@ class BaseRouter extends BaseClass {
             this.logger.info(`path=${ctx.path}|requestId=${ctx.requestId}`);
             await next();
         });
+        this.middleware.forEach(middleware => {
+            this.__router.use(middleware);
+        });
         //autoware method
-        let methodNames = Object.getOwnPropertyNames(this.__proto__).filter(name => {
-            return typeof this.__proto__[name] === "function" && name != "constructor";
+        let methodNames = Object.getOwnPropertyNames((Object.getPrototypeOf(this))).filter(name => {
+            return typeof (Object.getPrototypeOf(this))[name] === "function" && name != "constructor";
         });
         let methodNameReg = /([a-z])([A-Z])/;
         // console.log(methods)
@@ -30,9 +33,9 @@ class BaseRouter extends BaseClass {
                 });
                 if (this.__router[method] && path) {
                     if (path == "api") {
-                        this.__router[method]("/api*", this.__proto__[name].bind(this));
+                        this.__router[method]("/api*", (Object.getPrototypeOf(this))[name].bind(this));
                     } else {
-                        this.__router[method](`/${path}`, this.__proto__[name].bind(this));
+                        this.__router[method](`/${path}`, (Object.getPrototypeOf(this))[name].bind(this));
                     }
                 }
             }
@@ -46,6 +49,10 @@ class BaseRouter extends BaseClass {
         this.__router.prefix(path);
         this.route.call(this, this.__router);
         return this.__router;
+    }
+
+    use(middleware) {
+        this.middleware.push(middleware);
     }
 }
 

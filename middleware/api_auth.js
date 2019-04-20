@@ -41,6 +41,8 @@ class AuthMiddleware extends BaseClass {
                 if (sessionInfo.sessionStatus === 0 || sessionInfo.sessionStatus === 1) {
                     args.login = true;
                     args.userData = sessionInfo.userData;
+                }else{
+                    args.login = false;
                 }
             }
             await next();
