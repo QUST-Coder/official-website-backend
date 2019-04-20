@@ -9,9 +9,5 @@ database
 package-lock.json
 .nyc_output
 data/*
-<<<<<<< HEAD
 test/devtest
 .DS_Store
-=======
-test/devtest
->>>>>>> 65eecf4c635bc36f8567246b8a015baf2c4fb144
