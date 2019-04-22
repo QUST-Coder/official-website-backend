@@ -15,9 +15,6 @@ class BaseRouter extends BaseClass {
             this.logger.info(`path=${ctx.path}|requestId=${ctx.requestId}`);
             await next();
         });
-        this.middleware.forEach(middleware => {
-            this.__router.use(middleware);
-        });
         //autoware method
         let methodNames = Object.getOwnPropertyNames((Object.getPrototypeOf(this))).filter(name => {
             return typeof (Object.getPrototypeOf(this))[name] === "function" && name != "constructor";
@@ -30,6 +27,9 @@ class BaseRouter extends BaseClass {
             if (methods.includes(method)) {
                 let path = preHandleName[1].replace(/^./, function (match) {
                     return match.toLowerCase();
+                });
+                this.middleware.forEach(middleware => {
+                    this.__router.use(path, middleware);
                 });
                 if (this.__router[method] && path) {
                     if (path == "api") {
