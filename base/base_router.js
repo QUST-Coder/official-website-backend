@@ -28,10 +28,10 @@ class BaseRouter extends BaseClass {
                 let path = preHandleName[1].replace(/^./, function (match) {
                     return match.toLowerCase();
                 });
-                this.middleware.forEach(middleware => {
-                    this.__router.use(path, middleware);
-                });
                 if (this.__router[method] && path) {
+                    this.middleware.forEach(middleware => {
+                        this.__router.use(`/${path}`, middleware);
+                    });
                     if (path == "api") {
                         this.__router[method]("/api*", (Object.getPrototypeOf(this))[name].bind(this));
                     } else {
